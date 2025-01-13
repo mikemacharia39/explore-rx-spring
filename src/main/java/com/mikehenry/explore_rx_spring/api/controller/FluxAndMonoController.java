@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -26,6 +27,37 @@ public class FluxAndMonoController {
     @GetMapping(value = "/flux-infinite-stream", produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<Long> returnInfiniteFluxStream() {
         return Flux.interval(Duration.ofSeconds(1))
+                .log();
+    }
+
+    @GetMapping(value = "/flux-infinite-stream-with-conditions", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    public Flux<Long> returnInfiniteFluxStreamWithCancel() {
+        return Flux.interval(Duration.ofSeconds(1))
+                .switchMap(i -> {
+                    if (i == 5) {
+                        return Flux.error(new RuntimeException("Exception occurred"));
+                    }
+                    return Flux.just(i);
+                })
+                .log();
+    }
+
+    @GetMapping(value = "/flux-infinite-stream-with-conditions-and-retry", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    public Flux<Long> returnInfiniteFluxStreamWithCancelAndRetry() {
+        return Flux.interval(Duration.ofSeconds(1))
+                .switchMap(i -> {
+                    if (i == 5) {
+                        return Flux.error(new RuntimeException("Exception occurred"));
+                    }
+                    return Flux.just(i);
+                })
+                .retry(2)
+                .log();
+    }
+
+    @GetMapping(value = "/mono", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Integer> returnMono() {
+        return Mono.just(1)
                 .log();
     }
 }

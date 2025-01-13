@@ -86,4 +86,28 @@ class FluxAndMonoControllerTest {
                 .thenCancel()
                 .verify();
     }
+
+    @Test
+    void monoTest() {
+        EntityExchangeResult<Integer> response = webTestClient.get().uri("/mono")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Integer.class)
+                .returnResult();
+
+        Assertions.assertEquals(1, response.getResponseBody());
+    }
+
+    @Test
+    void monoTest_approach2() {
+        webTestClient.get().uri("/mono")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Integer.class)
+                .consumeWith(response -> {
+                    Assertions.assertEquals(1, response.getResponseBody());
+                });
+    }
 }
