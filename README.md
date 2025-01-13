@@ -2,7 +2,6 @@
 
 ## Why reactive spring boot
 
-|-|-|
 |Reactive spring boot|Traditional restful apis|
 |-|-|
 |Asynchronous and non blocking|Synchronous and blocking|
