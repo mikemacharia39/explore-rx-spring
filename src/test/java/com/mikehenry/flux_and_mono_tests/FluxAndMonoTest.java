@@ -39,4 +39,32 @@ class FluxAndMonoTest {
                 .expectNext("Spring", "Spring boot", "Reactive spring boo")
                 .verifyComplete();
     }
+
+    @Test
+    void fluxTestElements_WithError() {
+        Flux<String> stringFlux = Flux.just("Spring", "Spring boot", "Reactive spring boo")
+                .concatWith(Flux.error(new RuntimeException("Exception occurred")))
+                .log(); // to see the logs
+
+        StepVerifier.create(stringFlux)
+                .expectNext("Spring")
+                .expectNext("Spring boot")
+                .expectNext("Reactive spring boo")
+                //.expectError(RuntimeException.class) // this is the expected error
+                .expectErrorMessage("Exception occurred")// this is the expected error message
+                .verify();
+    }
+
+    @Test
+    void fluxTestElementsCount_WithError() {
+        Flux<String> stringFlux = Flux.just("Spring", "Spring boot", "Reactive spring boo")
+                .concatWith(Flux.error(new RuntimeException("Exception occurred")))
+                .log(); // to see the logs
+
+        StepVerifier.create(stringFlux)
+                .expectNextCount(3)
+                //.expectError(RuntimeException.class) // this is the expected error
+                .expectErrorMessage("Exception occurred")// this is the expected error message
+                .verify();
+    }
 }
