@@ -11,7 +11,7 @@ class FluxAndMonoTest {
     void fluxTest() {
         Flux<String> stringFlux = Flux.just("Spring", "Spring boot", "Reactive spring boo")
                 .concatWith(Flux.error(new RuntimeException("Exception occurred")))
-                .log(); // to see the logs
+                .log(); // to see the events
 
         stringFlux
                 .subscribe(System.out::println,
@@ -28,7 +28,7 @@ class FluxAndMonoTest {
                 .expectNext("Spring")
                 .expectNext("Spring boot")
                 .expectNext("Reactive spring boo")
-                .verifyComplete();
+                .verifyComplete(); // this is the last step to verify the flux
     }
 
     @Test
@@ -79,7 +79,7 @@ class FluxAndMonoTest {
 
     @Test
     void monoTest_WithError() {
-        StepVerifier.create(Mono.error(new RuntimeException("Error occurred")))
+        StepVerifier.create(Mono.error(new RuntimeException("Error occurred")).log())
                 .expectError(RuntimeException.class)
                 .verify();
     }
