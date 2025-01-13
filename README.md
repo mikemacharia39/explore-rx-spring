@@ -9,3 +9,12 @@
 |Uses events|Uses thread per request model|
 |There are mechanisms to handle back pressure|There is no support back pressure|
 |There is currently no support for relational databases only nosql support|There is robust support for relational databases|
+
+
+### Guides
+The following guides illustrate how to use some features concretely:
+
+* [Building a Reactive RESTful Web Service](https://spring.io/guides/gs/reactive-rest-service/)
+* [Accessing Data with MongoDB](https://spring.io/guides/gs/accessing-data-mongodb/)
+* [Spring Reactive Web](https://docs.spring.io/spring-boot/3.4.1/reference/web/reactive.html)
+* [Spring Data Reactive MongoDB](https://docs.spring.io/spring-boot/3.4.1/reference/data/nosql.html#data.nosql.mongodb)
