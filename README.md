@@ -23,3 +23,7 @@ The following guides illustrate how to use some features concretely:
 ### Definitions
 1. Flux - is a representation of 0 to n elements
 2. Mono - is a representation of 0 or 1 element
+
+### 2 ways you can implement reactive spring endpoints:
+1. Using the `@RestController` annotation - the usual way
+2. Using the `RouterFunction` and `HandlerFunction` - the functional way
