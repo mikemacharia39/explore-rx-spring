@@ -42,7 +42,8 @@ public class FluxAndMonoController {
                 .log();
     }
 
-    @GetMapping(value = "/flux-infinite-stream-with-conditions-and-retry", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    // Retry 2 times
+    @GetMapping(value = "/flux-infinite-stream-with-conditions-and-retry", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Long> returnInfiniteFluxStreamWithCancelAndRetry() {
         return Flux.interval(Duration.ofSeconds(1))
                 .switchMap(i -> {
