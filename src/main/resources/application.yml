@@ -13,3 +13,4 @@ spring:
       host: localhost
       database: school
       port: 27017
+      auto-index-creation: true

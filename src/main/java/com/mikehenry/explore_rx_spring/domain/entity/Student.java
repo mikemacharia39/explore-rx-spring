@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -28,6 +29,7 @@ public class Student {
     private String lastName;
     private Gender gender;
     private LocalDate dateOfBirth;
+    @Indexed(unique = true)
     private String email;
     private LearningScheduleType scheduleType = LearningScheduleType.FULL_TIME;
     private Address address;
