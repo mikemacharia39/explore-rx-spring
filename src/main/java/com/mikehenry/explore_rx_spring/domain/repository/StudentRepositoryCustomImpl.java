@@ -45,7 +45,6 @@ public class StudentRepositoryCustomImpl implements StudentRepositoryCustom {
             );
         }
 
-
         Query query = new Query(criteria);
         return reactiveMongoTemplate.find(query, Student.class);
     }
