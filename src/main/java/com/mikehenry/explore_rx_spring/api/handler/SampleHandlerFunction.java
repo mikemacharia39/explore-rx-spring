@@ -8,6 +8,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @Slf4j
 @Component
 public class SampleHandlerFunction {
@@ -16,9 +18,10 @@ public class SampleHandlerFunction {
         log.info("request: {}", serverRequest.toString());
         return ServerResponse
                 .ok()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.TEXT_EVENT_STREAM) // because it is a stream of events
                 .body(
                         Flux.just(1, 2, 3, 4)
+                                .delayElements(Duration.ofSeconds(1))
                                 .log(), Integer.class
                 );
     }
