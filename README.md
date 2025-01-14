@@ -28,3 +28,25 @@ The following guides illustrate how to use some features concretely:
 ### 2 ways you can implement reactive spring endpoints:
 1. Using the `@RestController` annotation - the usual way
 2. Using the `RouterFunction` and `HandlerFunction` - the functional way
+
+### Optimizing reads with ReadPreference
+Using `ReadPreference` can improve latency and performance by directing reads to secondary replicas that are closer, 
+reducing the load on the primary node and optimizing data distribution in geographically distributed systems.
+````java
+@Repository
+public interface TransactionRepository extends MongoRepository<Transaction, String> { 
+   @ReadPreference("secondaryPreferred")
+   List<Transaction> findByTransactionType(String type);
+}
+````
+
+### Partial Index With TTL
+Partial indexes are a feature of MongoDB that allows you to create an index that includes only the documents that meet a specified filter expression.
+````java
+@Indexed(
+           name = "PartialIndex",
+           expireAfterSeconds = 3456000, //40 days
+           partialFilter = "{ 'status': { $in: ['SUCCESS', 'COMPLETED'] } }"
+   )
+private LocalDateTime createdAt;
+````
