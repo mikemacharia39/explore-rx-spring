@@ -24,6 +24,21 @@ public class FluxAndMonoController {
                 .log();
     }
 
+    @GetMapping(value = "/flux-stream-with-back-pressure", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Long> createWithBackPressure() {
+        return Flux.interval(Duration.ofMillis(1))
+                .onBackpressureDrop() // this means the data is dropped when the subscriber is not able to keep up
+                .log();
+    }
+
+    // if a consumer is not able to keep up, the data is buffered. the consumer can consume the data from the buffer
+    @GetMapping(value = "/flux-stream-with-back-pressure-buffer", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Long> createWithBackPressureBuffer() {
+        return Flux.interval(Duration.ofMillis(1))
+                .onBackpressureBuffer(10) // this means the data is buffered when the subscriber is not able to keep up
+                .log();
+    }
+
     @GetMapping(value = "/flux-infinite-stream", produces = MediaType.APPLICATION_NDJSON_VALUE) // NDJSON = Newline Delimited JSON used for streaming. Replacement of APPLICATION_STREAM_JSON_VALUE
     public Flux<Long> returnInfiniteFluxStream() {
         return Flux.interval(Duration.ofSeconds(1))
