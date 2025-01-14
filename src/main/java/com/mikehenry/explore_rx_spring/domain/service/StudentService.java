@@ -7,6 +7,9 @@ import com.mikehenry.explore_rx_spring.domain.entity.Student;
 import com.mikehenry.explore_rx_spring.domain.mapper.StudentMapper;
 import com.mikehenry.explore_rx_spring.domain.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,10 +24,29 @@ import java.util.Map;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     private static final String STUDENT_NOT_FOUND_MESSAGE = "Student with id %s not found";
 
     public Mono<StudentResponseDto> addStudent(StudentRequestDto studentRequestDto) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("email").is(studentRequestDto.getEmail()));
+
+        Flux<Student> existsByEmail = reactiveMongoTemplate.find(query, Student.class);
+        return existsByEmail.collectList()
+                .flatMap(students -> {
+                    if (students.isEmpty()) {
+                        return saveStudent(studentRequestDto);
+                    } else {
+                        return Mono.error(
+                                new ResponseStatusException(HttpStatus.CONFLICT, "Student with email " + studentRequestDto.getEmail() + " already exists")
+                        );
+                    }
+                });
+
+    }
+
+    private Mono<StudentResponseDto> saveStudent(StudentRequestDto studentRequestDto) {
         Student student = studentMapper.toEntity(studentRequestDto);
         return studentRepository.insert(student)
                 .map(studentMapper::toResponseDto);
