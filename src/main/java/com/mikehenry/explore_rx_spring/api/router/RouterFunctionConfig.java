@@ -19,6 +19,8 @@ public class RouterFunctionConfig {
                 .route()
                 .GET("/functional/flux", accept(MediaType.APPLICATION_JSON), sampleHandlerFunction::serverResponseFlux)
                 .GET("/functional/mono", sampleHandlerFunction::serverResponseMono)
+                .GET("/functional/flux/{input}", sampleHandlerFunction::withInput)
+                .POST("/functional/flux-data", accept(MediaType.APPLICATION_JSON), sampleHandlerFunction::serverResponseFlux)
                 .build();
     }
 }

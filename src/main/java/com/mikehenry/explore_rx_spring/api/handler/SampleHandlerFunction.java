@@ -26,6 +26,17 @@ public class SampleHandlerFunction {
                 );
     }
 
+    public Mono<ServerResponse> withInput(ServerRequest serverRequest) {
+        int input = Integer.parseInt(serverRequest.pathVariable("input"));
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        Mono.just(input)
+                                .log(), Integer.class
+                );
+    }
+
     public Mono<ServerResponse> serverResponseMono(ServerRequest serverRequest) {
         log.info("requestPath: {}", serverRequest.requestPath());
         return ServerResponse
