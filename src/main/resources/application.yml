@@ -1,0 +1,12 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: explore-rx-spring
+  data:
+    mongodb:
+      host: localhost
+      database: explore-rx-spring
+      port: 27017
