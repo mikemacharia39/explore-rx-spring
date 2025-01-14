@@ -21,7 +21,7 @@ public class RouterFunctionConfig {
                 .GET("/functional/mono", sampleHandlerFunction::serverResponseMono)
                 .GET("/functional/flux/{input}", sampleHandlerFunction::withPathVariable)
                 .POST("/functional/flux-data", accept(MediaType.APPLICATION_JSON), sampleHandlerFunction::withRequestBody)
-                .PUT("/functional/flux-data/{input}", accept(MediaType.APPLICATION_JSON), sampleHandlerFunction::withRequestBody)
+                .PUT("/functional/flux-data/{input}", accept(MediaType.APPLICATION_JSON), sampleHandlerFunction::withRequestBodyToUpdateData)
                 .build();
     }
 }

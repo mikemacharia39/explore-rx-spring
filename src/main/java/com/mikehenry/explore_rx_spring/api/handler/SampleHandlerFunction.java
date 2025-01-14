@@ -49,6 +49,22 @@ public class SampleHandlerFunction {
                 );
     }
 
+    public Mono<ServerResponse> withRequestBodyToUpdateData(ServerRequest serverRequest) {
+        Mono<Map> requestBody = serverRequest.bodyToMono(Map.class);
+        int input = Integer.parseInt(serverRequest.pathVariable("input"));
+        Mono<Map> updatedData = requestBody.map(map -> {
+            map.put("input", input);
+            return map;
+        });
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        updatedData
+                                .log(), Map.class
+                );
+    }
+
     public Mono<ServerResponse> serverResponseMono(ServerRequest serverRequest) {
         log.info("requestPath: {}", serverRequest.requestPath());
         return ServerResponse
