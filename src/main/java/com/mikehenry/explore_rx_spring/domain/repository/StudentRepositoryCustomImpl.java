@@ -3,7 +3,6 @@ package com.mikehenry.explore_rx_spring.domain.repository;
 import com.mikehenry.explore_rx_spring.api.dto.StudentSearchParams;
 import com.mikehenry.explore_rx_spring.domain.entity.Student;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -17,10 +16,12 @@ public class StudentRepositoryCustomImpl implements StudentRepositoryCustom {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     @Override
-    public Flux<Student> searchStudent(StudentSearchParams searchParams,
-                                       Pageable pageable) {
+    public Flux<Student> searchStudents(StudentSearchParams searchParams) {
         Criteria criteria = new Criteria();
 
+        if (searchParams.ids() != null && !searchParams.ids().isEmpty()) {
+            criteria.and("id").in(searchParams.ids());
+        }
         if (searchParams.firstName() != null) {
             criteria.orOperator(Criteria.where("firstName").regex(searchParams.firstName(), "i"));
         }
@@ -44,7 +45,8 @@ public class StudentRepositoryCustomImpl implements StudentRepositoryCustom {
             );
         }
 
-        Query query = new Query(criteria).with(pageable);
+
+        Query query = new Query(criteria);
         return reactiveMongoTemplate.find(query, Student.class);
     }
 
