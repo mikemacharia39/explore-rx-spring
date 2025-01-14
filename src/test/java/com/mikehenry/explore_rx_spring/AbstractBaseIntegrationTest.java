@@ -12,7 +12,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class AbstractBaseIntegrationTest {
 
     @Container
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:5.0.31-rc0-nanoserver")
+    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:4.4.6")
             .withExposedPorts(27017);
 
     @DynamicPropertySource
