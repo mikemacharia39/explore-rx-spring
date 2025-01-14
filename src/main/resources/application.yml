@@ -7,6 +7,9 @@ spring:
     name: explore-rx-spring
   data:
     mongodb:
+      authentication-database: admin
+#      username:
+#      password:
       host: localhost
-      database: explore-rx-spring
+      database: school
       port: 27017
