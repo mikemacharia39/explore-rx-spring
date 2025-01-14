@@ -3,6 +3,7 @@ package com.mikehenry.explore_rx_spring.api.controller;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.BufferOverflowStrategy;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -32,10 +33,19 @@ public class FluxAndMonoController {
     }
 
     // if a consumer is not able to keep up, the data is buffered. the consumer can consume the data from the buffer
+    // the buffer can be full meaning that the application will fail
     @GetMapping(value = "/flux-stream-with-back-pressure-buffer", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Long> createWithBackPressureBuffer() {
         return Flux.interval(Duration.ofMillis(1))
                 .onBackpressureBuffer(10) // this means the data is buffered when the subscriber is not able to keep up
+                .log();
+    }
+
+    // here we are dropping the oldest data when the buffer is full
+    @GetMapping(value = "/flux-stream-with-back-pressure-overflow", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Long> createWithBackPressureOverflow() {
+        return Flux.interval(Duration.ofMillis(1))
+                .onBackpressureBuffer(2, i -> System.out.println("Dropped: " + i), BufferOverflowStrategy.DROP_OLDEST)
                 .log();
     }
 
