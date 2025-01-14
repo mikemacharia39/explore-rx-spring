@@ -1,8 +1,8 @@
 package com.mikehenry.explore_rx_spring.domain.repository;
 
+import com.mikehenry.explore_rx_spring.api.dto.StudentSearchParams;
 import com.mikehenry.explore_rx_spring.domain.entity.Student;
-import com.mikehenry.explore_rx_spring.domain.enumeration.Gender;
-import com.mikehenry.explore_rx_spring.domain.enumeration.LearningScheduleType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -11,55 +11,47 @@ import org.springframework.data.mongodb.core.query.Update;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@RequiredArgsConstructor
 public class StudentRepositoryCustomImpl implements StudentRepositoryCustom {
 
-    private final ReactiveMongoTemplate mongoTemplate;
-
-    public StudentRepositoryCustomImpl(ReactiveMongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     @Override
-    public Flux<Student> searchStudent(String firstName,
-                                       String lastName,
-                                       String email,
-                                       Gender gender,
-                                       LearningScheduleType scheduleType,
-                                       String search,
+    public Flux<Student> searchStudent(StudentSearchParams searchParams,
                                        Pageable pageable) {
         Criteria criteria = new Criteria();
 
-        if (firstName != null) {
-            criteria.orOperator(Criteria.where("firstName").regex(firstName, "i"));
+        if (searchParams.firstName() != null) {
+            criteria.orOperator(Criteria.where("firstName").regex(searchParams.firstName(), "i"));
         }
-        if (lastName != null) {
-            criteria.orOperator(Criteria.where("lastName").regex(lastName, "i"));
+        if (searchParams.lastName() != null) {
+            criteria.orOperator(Criteria.where("lastName").regex(searchParams.lastName(), "i"));
         }
-        if (email != null) {
-            criteria.orOperator(Criteria.where("email").regex(email, "i"));
+        if (searchParams.email() != null) {
+            criteria.orOperator(Criteria.where("email").regex(searchParams.email(), "i"));
         }
-        if (gender != null) {
-            criteria.and("gender").is(gender);
+        if (searchParams.gender() != null) {
+            criteria.and("gender").is(searchParams.gender());
         }
-        if (scheduleType != null) {
-            criteria.and("scheduleType").is(scheduleType);
+        if (searchParams.scheduleType() != null) {
+            criteria.and("scheduleType").is(searchParams.scheduleType());
         }
-        if (search != null) {
+        if (searchParams.search() != null) {
             criteria.orOperator(
-                    Criteria.where("firstName").regex(search, "i"),
-                    Criteria.where("lastName").regex(search, "i"),
-                    Criteria.where("email").regex(search, "i")
+                    Criteria.where("firstName").regex(searchParams.search(), "i"),
+                    Criteria.where("lastName").regex(searchParams.search(), "i"),
+                    Criteria.where("email").regex(searchParams.search(), "i")
             );
         }
 
         Query query = new Query(criteria).with(pageable);
-        return mongoTemplate.find(query, Student.class);
+        return reactiveMongoTemplate.find(query, Student.class);
     }
 
     @Override
     public Mono<Student> updateSubjectsById(String id, String[] subjects) {
         Query query = new Query(Criteria.where("_id").is(id));
         Update update = new Update().set("subjects", subjects);
-        return mongoTemplate.findAndModify(query, update, Student.class);
+        return reactiveMongoTemplate.findAndModify(query, update, Student.class);
     }
 }
