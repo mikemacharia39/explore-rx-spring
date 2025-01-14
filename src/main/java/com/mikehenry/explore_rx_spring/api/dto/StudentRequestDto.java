@@ -7,22 +7,38 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-@Builder
-public record StudentRequestDto(
-        @NotBlank @Size(min = 4, max = 30) String firstName,
-        @NotBlank @Size(min = 4, max = 30) String lastName,
-        @NotNull Gender gender,
-        @NotNull LocalDate dateOfBirth,
-        @NotBlank String email,
-        @NotNull LearningScheduleType scheduleType,
-        AddressDto address,
-        @NotEmpty List<String> subjects,
-        @Min(value = 0) BigDecimal totalSpentInBooks
-) {
+@SuperBuilder
+@NoArgsConstructor
+@Getter
+@Setter
+public class StudentRequestDto {
+    @NotBlank
+    @Size(min = 4, max = 30)
+    String firstName;
+    @NotBlank
+    @Size(min = 4, max = 30)
+    String lastName;
+    @NotNull
+    Gender gender;
+    @NotNull
+    LocalDate dateOfBirth;
+    @NotBlank
+    String email;
+    @NotNull
+    LearningScheduleType scheduleType;
+    @NotNull
+    AddressDto address;
+    @NotEmpty
+    List<String> subjects;
+    @Min(value = 0)
+    BigDecimal totalSpentInBooks;
 }
