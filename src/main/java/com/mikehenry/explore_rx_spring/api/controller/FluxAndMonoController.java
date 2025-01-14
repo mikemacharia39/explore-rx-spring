@@ -17,14 +17,14 @@ public class FluxAndMonoController {
                 .log();
     }
 
-    @GetMapping(value = "/flux-stream", produces = MediaType.APPLICATION_NDJSON_VALUE) // NDJSON = Newline Delimited JSON used for streaming
+    @GetMapping(value = "/flux-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE) // MediaType.TEXT_EVENT_STREAM_VALUE is used for streaming in the browser
     public Flux<Integer> returnFluxStream() {
         return Flux.just(1, 2, 3, 4)
                 .delayElements(Duration.ofSeconds(1))
                 .log();
     }
 
-    @GetMapping(value = "/flux-infinite-stream", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    @GetMapping(value = "/flux-infinite-stream", produces = MediaType.APPLICATION_NDJSON_VALUE) // NDJSON = Newline Delimited JSON used for streaming. Replacement of APPLICATION_STREAM_JSON_VALUE
     public Flux<Long> returnInfiniteFluxStream() {
         return Flux.interval(Duration.ofSeconds(1))
                 .log();
