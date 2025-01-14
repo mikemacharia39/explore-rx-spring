@@ -9,6 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -26,7 +27,7 @@ public class SampleHandlerFunction {
                 );
     }
 
-    public Mono<ServerResponse> withInput(ServerRequest serverRequest) {
+    public Mono<ServerResponse> withPathVariable(ServerRequest serverRequest) {
         int input = Integer.parseInt(serverRequest.pathVariable("input"));
         return ServerResponse
                 .ok()
@@ -34,6 +35,17 @@ public class SampleHandlerFunction {
                 .body(
                         Mono.just(input)
                                 .log(), Integer.class
+                );
+    }
+
+    public Mono<ServerResponse> withRequestBody(ServerRequest serverRequest) {
+        Mono<Map> requestBody = serverRequest.bodyToMono(Map.class);
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        requestBody
+                                .log(), Map.class
                 );
     }
 
